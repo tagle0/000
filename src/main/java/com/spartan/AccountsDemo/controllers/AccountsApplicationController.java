@@ -5,7 +5,6 @@
  */
 package com.spartan.AccountsDemo.controllers;
 
-import com.spartan.AccountsDemo.dao.procedures.AltaStoredProcedure;
 import com.spartan.AccountsDemo.services.AltaStoredProcedureI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

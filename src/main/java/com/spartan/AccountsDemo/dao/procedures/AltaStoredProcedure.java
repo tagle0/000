@@ -23,6 +23,17 @@ public class AltaStoredProcedure extends StoredProcedure {
 
     public AltaStoredProcedure(DataSource dataSource) {
         super(dataSource, "alta");
+        declareParameter(new SqlParameter("nombre", Types.VARCHAR));
+        declareParameter(new SqlParameter("telefono", Types.VARCHAR));
+        declareParameter(new SqlParameter("direccion", Types.VARCHAR));
+        declareParameter(new SqlParameter("correo", Types.VARCHAR));
+        declareParameter(new SqlParameter("saldo_in", Types.DECIMAL));
+        declareParameter(new SqlParameter("ejecutivo", Types.VARCHAR));
+        declareParameter(new SqlOutParameter("cliente_id", Types.INTEGER));
+        declareParameter(new SqlOutParameter("cuenta_id", Types.INTEGER));
+        declareParameter(new SqlOutParameter("saldo", Types.DECIMAL));
+        setFunction(false);
+        compile();
     }
 
     public AltaStoredProcedureResponse execute(
@@ -40,18 +51,6 @@ public class AltaStoredProcedure extends StoredProcedure {
         inMap.put("correo", correo);
         inMap.put("saldo_in", saldo_in);
         inMap.put("ejecutivo", ejecutivo);
-        inMap.put("cliente_id", 0);
-        inMap.put("cuenta_id", 0);
-        inMap.put("saldo", 0d);
-        super.declareParameter(new SqlParameter("nombre", Types.VARCHAR));
-        super.declareParameter(new SqlParameter("telefono", Types.VARCHAR));
-        super.declareParameter(new SqlParameter("direccion", Types.VARCHAR));
-        super.declareParameter(new SqlParameter("correo", Types.VARCHAR));
-        super.declareParameter(new SqlParameter("saldo_in", Types.DECIMAL));
-        super.declareParameter(new SqlParameter("ejecutivo", Types.VARCHAR));
-        super.declareParameter(new SqlOutParameter("cliente_id", Types.INTEGER));
-        super.declareParameter(new SqlOutParameter("cuenta_id", Types.INTEGER));
-        super.declareParameter(new SqlOutParameter("saldo", Types.DECIMAL));
         Map<String, Object> out = super.execute(inMap);
         AltaStoredProcedureResponse response = new AltaStoredProcedureResponse();
         response.setClienteId((int) out.get("cliente_id"));
