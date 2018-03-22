@@ -4,13 +4,41 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
+
 <html>
     <head>
-        <title>TODO supply a title</title>
+        <title>Spring boot test</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <div>TODO write content</div>
+        <div>
+            <form action="/altaStoredProcedure">
+                <div>
+                    Nombre:
+                    <input type="text" name="nombre" id="nombre"/>
+                </div>
+                <div>
+                    Tel&eacute;fono:
+                    <input type="text" name="telefono" id="telefono"/>
+                </div>
+                <div>
+                    Direcci&oacute;n:
+                    <input type="text" name="direccion" id="direccion"/>
+                </div>
+                <div>
+                    Correo:
+                    <input type="email" name="correo" id="correo"/>
+                </div>
+                <div>
+                    Saldo:
+                    <input type="number" step="0.01" name="saldo_in" id="saldo_in"/>
+                </div>
+                <div>
+                    <input type="submit" value="OK"/>
+                </div>
+
+            </form>
+        </div>
     </body>
 </html>
