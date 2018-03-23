@@ -5,40 +5,135 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>Spring boot test</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Aplicación de cuentas</title>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="_csrf" th:content="${_csrf.token}"/>
+        <!-- default header name is X-CSRF-TOKEN -->
+        <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     </head>
     <body>
         <div>
-            <form action="/altaStoredProcedure">
-                <div>
-                    Nombre:
-                    <input type="text" name="nombre" id="nombre"/>
-                </div>
-                <div>
-                    Tel&eacute;fono:
-                    <input type="text" name="telefono" id="telefono"/>
-                </div>
-                <div>
-                    Direcci&oacute;n:
-                    <input type="text" name="direccion" id="direccion"/>
-                </div>
-                <div>
-                    Correo:
-                    <input type="email" name="correo" id="correo"/>
-                </div>
-                <div>
-                    Saldo:
-                    <input type="number" step="0.01" name="saldo_in" id="saldo_in"/>
-                </div>
-                <div>
-                    <input type="submit" value="OK"/>
-                </div>
+            <div>
+                <button type="button" class="ui-icon ui-icon-plus" onclick="$('#cliente_form').dialog('open')">
 
-            </form>
+                </button>
+            </div>
+            <div id="main-table-container">
+
+            </div>
+            <div id="cliente_form">
+                <div>
+                    <form action="/clientes" method="post" id="clientesForm">
+                        <input type="hidden" id="_token" name="_token" value="0" th:value="${_csrf.token}"/>
+                        <input type="hidden" id="id" name="id" value="0"/>
+                        <div>
+                            Nombre:
+                            <input type="text" name="nombre" id="nombre"/>
+                        </div>
+                        <div>
+                            Teléfono:
+                            <input type="text" name="telefono" id="telefono"/>
+                        </div>
+                        <div>
+                            Dirección:
+                            <input type="text" name="direccion" id="direccion"/>
+                        </div>
+                        <div>
+                            Correo:
+                            <input type="email" name="correo" id="correo"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
+        <link rel="stylesheet" href="/jquery-ui-1.12.1.custom/jquery-ui.min.css"/>
+        <script src="/jquery-3.3.1.js"></script>
+        <script src="/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+        <script>
+                    $(document).ready(
+                            function () {
+                                $('#cliente_form').dialog({
+                                    autoOpen: false,
+                                    modal: true,
+                                    title: 'Cliente',
+                                    width: 'auto',
+                                    height: 'auto',
+                                    buttons: {
+                                        "Aceptar": function () {
+                                            postClient(
+                                                    $('#id').val(),
+                                                    $('#nombre').val(),
+                                                    $('#correo').val(),
+                                                    $('#direccion').val(),
+                                                    $('#telefono').val(),
+                                                    $('#_token').val()
+                                                    );
+                                        },
+                                        "Cancelar": function () {
+                                            $('#cliente_form').dialog('close')
+                                        }
+                                    }
+                                });
+                            }
+                    );
+        </script>
+        <script>
+            function reloadMainTable() {
+                $.ajax("/ClientsApplication/fullClientsTable", {
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("App broken :'(");
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        $('#main-table-container').html(data);
+                    }
+                });
+            }
+        </script>
+        <script>
+            $(document).ready(
+                    reloadMainTable()
+                    );
+        </script>
+        <script>
+            function postClient(
+                    id,
+                    nombre,
+                    correo,
+                    direccion,
+                    telefono,
+                    _token
+                    ) {
+                $.ajax("/clientes", {
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: {
+                        id: id,
+                        nombre: nombre,
+                        correo: correo,
+                        direccion: direccion,
+                        telefono: telefono
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("App broken :'( on add client");
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        reloadMainTable();
+                        $('#clientesForm')[0].reset();
+                        $('#cliente_form').dialog('close');
+                    }
+                });
+            }
+        </script>
+        <script>
+            $(document).ajaxSend(function (e, xhr, options) {
+                var token = $("#_token").val();
+                var header = "X-CSRF-TOKEN";
+                xhr.setRequestHeader(header, token);
+            });
+        </script>
     </body>
 </html>

@@ -7,11 +7,13 @@ package com.spartan.AccountsDemo.repositories;
 
 import com.spartan.AccountsDemo.pojo.Cliente;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 /**
  *
  * @author tagle
  */
+@RepositoryRestResource(collectionResourceRel = "cliente", path = "cliente")
 public interface ClienteCrudRepository extends CrudRepository<Cliente, Integer>{
     
 }

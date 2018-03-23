@@ -11,7 +11,7 @@ import com.spartan.AccountsDemo.dao.pojo.AltaStoredProcedureResponse;
  *
  * @author tagle
  */
-public interface AltaStoredProcedureI {
+public interface AltaStoredProcedureServiceI {
 
     public AltaStoredProcedureResponse callAlta(String nombre,
             String telefono,

@@ -7,7 +7,6 @@ package com.spartan.AccountsDemo.services.impl;
 
 import com.spartan.AccountsDemo.dao.pojo.AltaStoredProcedureResponse;
 import com.spartan.AccountsDemo.dao.procedures.AltaStoredProcedure;
-import com.spartan.AccountsDemo.services.AltaStoredProcedureI;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -16,14 +15,15 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import com.spartan.AccountsDemo.services.AltaStoredProcedureServiceI;
 
 /**
  *
  * @author tagle
  */
-@Service("altaStoredProcedure")
+@Service("altaStoredProcedureService")
 @Repository
-public class AltaStoredProcedureImpl implements AltaStoredProcedureI{
+public class AltaStoredProcedureServiceImpl implements AltaStoredProcedureServiceI{
 
     @Autowired
     DataSource dataSource;
@@ -33,7 +33,7 @@ public class AltaStoredProcedureImpl implements AltaStoredProcedureI{
         AltaStoredProcedure a = new AltaStoredProcedure(dataSource);
         AltaStoredProcedureResponse response = new AltaStoredProcedureResponse();
         try {
-             CallableStatement cs = dataSource.getConnection().prepareCall("call alta(?,?,?,?,?,?,?,?,?)");
+              CallableStatement cs = dataSource.getConnection().prepareCall("call alta(?,?,?,?,?,?,?,?,?)");
             cs.setString(1, nombre);
             cs.setString(2, telefono);
             cs.setString(3, direccion);
@@ -48,7 +48,7 @@ public class AltaStoredProcedureImpl implements AltaStoredProcedureI{
             response.setCuentaId(cs.getInt(8));
             response.setSaldo(cs.getDouble(9));
         } catch (SQLException ex) {
-            Logger.getLogger(AltaStoredProcedureImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AltaStoredProcedureServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         return response;
     }
