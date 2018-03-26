@@ -5,9 +5,11 @@
  */
 package com.spartan.AccountsDemo.pojo;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,7 +32,8 @@ public class Cliente {
     private String correo;
     private String direccion;
     private String telefono;
-    @OneToMany(mappedBy = "cliente")
+    @OneToMany(mappedBy = "cliente",fetch = FetchType.EAGER)
+    @JsonBackReference
     private List<Cuenta> cuentas;
 
     public List<Cuenta> getCuentas() {

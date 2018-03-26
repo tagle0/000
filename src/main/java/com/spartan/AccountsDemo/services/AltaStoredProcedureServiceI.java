@@ -5,7 +5,7 @@
  */
 package com.spartan.AccountsDemo.services;
 
-import com.spartan.AccountsDemo.dao.pojo.AltaStoredProcedureResponse;
+import com.spartan.AccountsDemo.pojo.Cliente;
 
 /**
  *
@@ -13,7 +13,7 @@ import com.spartan.AccountsDemo.dao.pojo.AltaStoredProcedureResponse;
  */
 public interface AltaStoredProcedureServiceI {
 
-    public AltaStoredProcedureResponse callAlta(String nombre,
+    public Cliente callAlta(String nombre,
             String telefono,
             String direccion,
             String correo,

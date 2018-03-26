@@ -5,17 +5,19 @@
  */
 package com.spartan.AccountsDemo.services.impl;
 
-import com.spartan.AccountsDemo.dao.pojo.AltaStoredProcedureResponse;
-import com.spartan.AccountsDemo.dao.procedures.AltaStoredProcedure;
+import com.spartan.AccountsDemo.pojo.Cliente;
+import com.spartan.AccountsDemo.repositories.ClienteCrudRepository;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import com.spartan.AccountsDemo.services.AltaStoredProcedureServiceI;
+import javax.persistence.EntityManager;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureQuery;
 
 /**
  *
@@ -26,34 +28,32 @@ import com.spartan.AccountsDemo.services.AltaStoredProcedureServiceI;
 public class AltaStoredProcedureServiceImpl implements AltaStoredProcedureServiceI{
 
     @Autowired
-    DataSource dataSource;
+    EntityManager entityManager;
+    
+    @Autowired
+    ClienteCrudRepository clienteCrudRepository;
     
     @Override
-    public AltaStoredProcedureResponse callAlta(String nombre, String telefono, String direccion, String correo, Double saldo_in, String ejecutivo) {
-        AltaStoredProcedure a = new AltaStoredProcedure(dataSource);
-        AltaStoredProcedureResponse response = new AltaStoredProcedureResponse();
-            try {
-                  CallableStatement cs = dataSource.getConnection().prepareCall("{call alta(?,?,?,?,?,?,?,?,?)}");
-                cs.setString(1, nombre);
-                cs.setString(2, telefono);
-                cs.setString(3, direccion);
-                cs.setString(4, correo);
-                cs.setDouble(5, saldo_in);
-                cs.setString(6, ejecutivo);
-
-                cs.registerOutParameter(7, java.sql.Types.INTEGER);
-                cs.registerOutParameter(8, java.sql.Types.INTEGER);
-                cs.registerOutParameter(9, java.sql.Types.DECIMAL);
-
-                cs.executeUpdate();
-
-                response.setClienteId(cs.getInt(7));
-                response.setCuentaId(cs.getInt(8));
-                response.setSaldo(cs.getDouble(9));
-            } catch (SQLException ex) {
-                Logger.getLogger(AltaStoredProcedureServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        return response;
+    public Cliente callAlta(String nombre, String telefono, String direccion, String correo, Double saldo_in, String ejecutivo) {
+        StoredProcedureQuery storedProcedureQuery = entityManager.createStoredProcedureQuery("alta");
+        storedProcedureQuery.registerStoredProcedureParameter("param_nombre", String.class, ParameterMode.IN);
+        storedProcedureQuery.setParameter("param_nombre", nombre);
+        storedProcedureQuery.registerStoredProcedureParameter("param_telefono", String.class, ParameterMode.IN);
+        storedProcedureQuery.setParameter("param_telefono", telefono);
+        storedProcedureQuery.registerStoredProcedureParameter("param_direccion", String.class, ParameterMode.IN);
+        storedProcedureQuery.setParameter("param_direccion", direccion);
+        storedProcedureQuery.registerStoredProcedureParameter("param_correo", String.class, ParameterMode.IN);
+        storedProcedureQuery.setParameter("param_correo", correo);
+        storedProcedureQuery.registerStoredProcedureParameter("param_saldo_in", Double.class, ParameterMode.IN);
+        storedProcedureQuery.setParameter("param_saldo_in", saldo_in);
+        storedProcedureQuery.registerStoredProcedureParameter("param_ejecutivo", String.class, ParameterMode.IN);
+        storedProcedureQuery.setParameter("param_ejecutivo", ejecutivo);
+        storedProcedureQuery.registerStoredProcedureParameter("param_cliente_id", Integer.class, ParameterMode.OUT);
+        storedProcedureQuery.registerStoredProcedureParameter("param_cuenta_id", Integer.class, ParameterMode.OUT);
+        storedProcedureQuery.registerStoredProcedureParameter("param_saldo", Double.class, ParameterMode.OUT);
+        storedProcedureQuery.execute();
+        int clienteId = (int) storedProcedureQuery.getOutputParameterValue("param_cliente_id");
+        return clienteCrudRepository.findById(clienteId).get();
     }
 
     

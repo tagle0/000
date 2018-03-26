@@ -1,6 +1,5 @@
 package com.spartan.AccountsDemo;
 
-import com.spartan.AccountsDemo.dao.pojo.AltaStoredProcedureResponse;
 import com.spartan.AccountsDemo.pojo.Cliente;
 import com.spartan.AccountsDemo.repositories.ClienteCrudRepository;
 import org.junit.Test;
@@ -34,16 +33,23 @@ public class AccountsDemoApplicationTests {
         String correo = "mail@domain.com";
         Double saldo = 999.99d;
         String ejecutivo = "Anonymous test";
-        AltaStoredProcedureResponse altaStoredProcedureResponse = altaStoredProcedureService.callAlta(nombre, telefono, direccion, correo, saldo, ejecutivo);
-        Optional<Cliente> optionalClient = clienteCrudRepository.findById(altaStoredProcedureResponse.getClienteId());
-        Assert.assertTrue("Client " + altaStoredProcedureResponse.getClienteId() + " was not recovered from DB", optionalClient.isPresent());
-        if (optionalClient.isPresent()) {
-            Cliente cliente = optionalClient.get();
-            Assert.assertEquals("Nombre was not recovered correctly (" + cliente.getNombre() + ")", nombre, cliente.getNombre());
-            Assert.assertEquals("Nombre was not recovered correctly (" + cliente.getCorreo()+ ")", correo, cliente.getCorreo());
-            Assert.assertEquals("Nombre was not recovered correctly (" + cliente.getTelefono()+ ")", telefono, cliente.getTelefono());
-            Assert.assertEquals("Nombre was not recovered correctly (" + cliente.getDireccion()+ ")", direccion, cliente.getDireccion());
-            Assert.assertNotEquals("Nombre was not recovered correctly (" + cliente.getId()+ ")", 0, cliente.getId());
+        Cliente cliente = altaStoredProcedureService.callAlta(nombre, telefono, direccion, correo, saldo, ejecutivo);
+        Assert.assertNotEquals("Client not created", cliente);
+        if (cliente != null) {
+            Assert.assertEquals("Nombre was not recovered correctly", nombre, cliente.getNombre());
+            Assert.assertEquals("Correo was not recovered correctly", correo, cliente.getCorreo());
+            Assert.assertEquals("Telefono was not recovered correctly", telefono, cliente.getTelefono());
+            Assert.assertEquals("Direccion was not recovered correctly", direccion, cliente.getDireccion());
+            Assert.assertNotEquals("Id was not recovered correctly", 0, cliente.getId());
+            Assert.assertNotNull("Account not created correctly", cliente.getCuentas());
+            if (cliente.getCuentas() != null) {
+                Assert.assertFalse("No accounts created", cliente.getCuentas().isEmpty());
+                if(!cliente.getCuentas().isEmpty()){
+                    Assert.assertEquals(saldo, cliente.getCuentas().get(0).getSaldo());
+                    Assert.assertEquals(ejecutivo, cliente.getCuentas().get(0).getEjecutivo());
+                    
+                }
+            }
         }
     }
 

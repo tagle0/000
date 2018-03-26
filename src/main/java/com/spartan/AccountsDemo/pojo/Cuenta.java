@@ -5,6 +5,7 @@
  */
 package com.spartan.AccountsDemo.pojo;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,6 +28,7 @@ public class Cuenta {
     private Double saldo;
     @ManyToOne
     @JoinColumn(name = "cliente_id")
+    @JsonManagedReference
     private Cliente cliente;
 
     public Cliente getCliente() {

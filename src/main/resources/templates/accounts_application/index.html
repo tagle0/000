@@ -11,14 +11,14 @@ and open the template in the editor.
         <title>Aplicación de cuentas</title>
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <meta name="_csrf" th:content="${_csrf.token}"/>
-        <!-- default header name is X-CSRF-TOKEN -->
-        <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     </head>
     <body>
         <div>
             <div>
                 <button type="button" class="ui-icon ui-icon-plus" onclick="$('#cliente_form').dialog('open')">
+
+                </button>
+                <button type="button" class="ui-icon ui-icon-plus" onclick="$('#form_alta_dialog').dialog('open')">
 
                 </button>
             </div>
@@ -29,6 +29,7 @@ and open the template in the editor.
                 <div>
                     <form action="/clientes" method="post" id="clientesForm">
                         <input type="hidden" id="_token" name="_token" value="0" th:value="${_csrf.token}"/>
+                        <input type="hidden" id="_token_header_name" name="_token" value="0" th:value="${_csrf.headerName}"/>
                         <input type="hidden" id="id" name="id" value="0"/>
                         <div>
                             Nombre:
@@ -50,9 +51,69 @@ and open the template in the editor.
                 </div>
             </div>
         </div>
+        <div id="form_alta_dialog">
+            <div>
+                <div style="display: inline-block">
+                    <label for="alta_nombre">Nombre:</label>
+                </div>
+                <div style="display: inline-block">
+                    <input type="text" id="alta_nombre" name="alta_nombre"/>
+                </div>
+            </div>
+            <div>
+                <div style="display: inline-block">
+                    <label for="alta_telefono">Teléfono:</label>
+                </div>
+                <div style="display: inline-block">
+                    <input type="text" id="alta_telefono" name="alta_telefono"/>
+                </div>
+            </div>
+            <div>
+                <div style="display: inline-block">
+                    <label for="alta_direccion">Dirección:</label>
+                </div>
+                <div style="display: inline-block">
+                    <input type="text" id="alta_direccion" name="alta_direccion"/>
+                </div>
+            </div>
+            <div>
+                <div style="display: inline-block">
+                    <label for="alta_correo">Correo:</label>
+                </div>
+                <div style="display: inline-block">
+                    <input type="text" id="alta_correo" name="alta_correo"/>
+                </div>
+            </div>
+            <div>
+                <div style="display: inline-block">
+                    <label for="alta_saldo">Saldo:</label>
+                </div>
+                <div style="display: inline-block">
+                    <input type="number" step="0.01" id="alta_saldo" name="alta_saldo"/>
+                </div>
+            </div>
+        </div>
+        <div id="call_alta_result">
+            <div id="call_alta_result_content">
+                
+            </div>
+        </div>
         <link rel="stylesheet" href="/jquery-ui-1.12.1.custom/jquery-ui.min.css"/>
         <script src="/jquery-3.3.1.js"></script>
         <script src="/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+        <script>
+            $('#call_alta_result').dialog({
+                autoOpen:false,
+                modal:true,
+                width:'auto',
+                height:'auto',
+                buttons:{
+                    'Ok':function(){
+                        $('#call_alta_result').dialog('close');
+                    }
+                }
+            });
+        </script>
         <script>
                     $(document).ready(
                             function () {
@@ -131,9 +192,54 @@ and open the template in the editor.
         <script>
             $(document).ajaxSend(function (e, xhr, options) {
                 var token = $("#_token").val();
-                var header = "X-CSRF-TOKEN";
+                var header = $("#_token_header_name").val();
+                ;
                 xhr.setRequestHeader(header, token);
             });
+        </script>
+        <script>
+            $('#form_alta_dialog').dialog(
+                    {
+                        autoOpen: false,
+                        modal: true,
+                        width: 'auto',
+                        height: 'auto',
+                        buttons: {
+                            "Ok": function () {
+                                var nombre = $('#alta_nombre').val();
+                                var telefono = $('#alta_telefono').val();
+                                var direccion = $('#alta_direccion').val();
+                                var correo = $('#alta_correo').val();
+                                var saldo = $('#alta_saldo').val();
+                                callAlta(nombre, telefono, direccion, correo, saldo);
+                            },
+                            "Cancelar": function () {
+                                $('#form_alta_dialog').dialog('close');
+                            }
+                        }
+                    }
+            );
+        </script>
+        <script>
+            function callAlta(nombre, telefono, direccion, correo, saldo) {
+                $.ajax('/ClientesApplication/alta', {
+                    data : {
+                        nombre: nombre,
+                        telefono: telefono,
+                        direccion: direccion,
+                        correo: correo,
+                        saldo: saldo
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert('Call to stored procedure alta failed');
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        $('#call_alta_result_content').html(data);
+                        $('#call_alta_result').dialog('open');
+                        reloadMainTable();
+                    }
+                });
+            }
         </script>
     </body>
 </html>

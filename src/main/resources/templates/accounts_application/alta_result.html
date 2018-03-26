@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Alta result</title>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <div>
+            <h1>
+                Datos creados:
+            </h1>
+            <div>
+                <div>
+                    Cliente:
+                </div>
+                <div>
+                    <div style="display: inline-block">
+                        Id: 
+                    </div>
+                    <div style="display: inline-block" th:text="${cliente.id}">
+                        Id: 
+                    </div>
+                </div>
+                <div>
+                    <div style="display: inline-block">
+                        Nombre: 
+                    </div>
+                    <div style="display: inline-block" th:text="${cliente.nombre}">
+                        Nombre: 
+                    </div>
+                </div>
+                <div>
+                    <div style="display: inline-block">
+                        Correo: 
+                    </div>
+                    <div style="display: inline-block" th:text="${cliente.correo}">
+                        Correo: 
+                    </div>
+                </div>
+                <div>
+                    <div style="display: inline-block">
+                        Dirección: 
+                    </div>
+                    <div style="display: inline-block" th:text="${cliente.direccion}">
+                        Dirección: 
+                    </div>
+                </div>
+                <div>
+                    <div style="display: inline-block">
+                        Teléfono: 
+                    </div>
+                    <div style="display: inline-block" th:text="${cliente.telefono}">
+                        Teléfono: 
+                    </div>
+                </div>
+                <div>
+                    <div style="display: inline-block">
+                        Saldo:
+                    </div>
+                    <div style="display: inline-block" th:text="${cuenta.saldo}">
+                        Saldo:
+                    </div>
+                    <div style="display: inline-block">
+                        Ejecutivo:
+                    </div>
+                    <div style="display: inline-block" th:text="${cuenta.ejecutivo}">
+                        Ejecutivo:
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
